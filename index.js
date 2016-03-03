@@ -9,7 +9,7 @@ function LensClient(parameters) {
 
     this.getSession = function (callback) {
         if (lensClient._session) {
-            return callback(_session);
+            return callback(lensClient._session);
         } else {
             request.post({
                 url: lensClient.lensServerBaseUrl + "session/",
