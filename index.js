@@ -40,8 +40,23 @@ function LensClient(parameters) {
             })
         })
     };
-    this.executeAsync = function (sql) {
-
+    this.listQueries = function (params, callback) {
+        this.getSession(function (sessionHandle) {
+            var qs = JSON.parse(JSON.stringify(params));
+            qs['sessionid'] = sessionHandle;
+            request.get({
+                url: lensClient.lensServerBaseUrl + "/queryapi/queries/",
+                qs: qs, headers: {
+                    'accept': 'application/json'
+                }
+            }, function (error, response, body) {
+                if(response && response.statusCode == 200) {
+                    callback(JSON.parse(body));
+                } else {
+                    console.log("Error getting query status: " + error);
+                }
+            })
+        })
     }
 }
 module.exports = LensClient;
