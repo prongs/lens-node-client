@@ -1,11 +1,29 @@
 var request = require("request");
-var method = LensClient.prototype;
 
 function LensClient(parameters) {
     this.lensServerBaseUrl = parameters.lensServerBaseUrl;
     this.username = parameters.username;
     this.password = parameters.password;
     var lensClient = this;
+
+    function getHttpCallbackFunction(successCallback, errorCallback) {
+        return function (error, response, body) {
+            if (response && response.statusCode == 200) {
+                successCallback(JSON.parse(body));
+            } else {
+                console.error(error);
+                if (errorCallback) {
+                    errorCallback(error);
+                }
+            }
+        }
+    }
+
+    this.invalidateSession = function (callback) {
+        request.del({url: lensClient.lensServerBaseUrl + "session/", qs: {sessionid: lensClient._session}},
+            getHttpCallbackFunction(callback)
+        );
+    };
 
     this.getSession = function (callback) {
         if (lensClient._session) {
@@ -27,17 +45,11 @@ function LensClient(parameters) {
     this.getQuery = function (handle, callback) {
         this.getSession(function (sessionHandle) {
             request.get({
-                url: lensClient.lensServerBaseUrl + "/queryapi/queries/" + handle,
+                url: lensClient.lensServerBaseUrl + "queryapi/queries/" + handle,
                 qs: {sessionid: sessionHandle}, headers: {
                     'accept': 'application/json'
                 }
-            }, function (error, response, body) {
-                if(response && response.statusCode == 200) {
-                    callback(JSON.parse(body));
-                } else {
-                    console.log("Error getting query status: " + error);
-                }
-            })
+            }, getHttpCallbackFunction(callback))
         })
     };
     this.listQueries = function (params, callback) {
@@ -45,17 +57,11 @@ function LensClient(parameters) {
             var qs = JSON.parse(JSON.stringify(params));
             qs['sessionid'] = sessionHandle;
             request.get({
-                url: lensClient.lensServerBaseUrl + "/queryapi/queries/",
+                url: lensClient.lensServerBaseUrl + "queryapi/queries/",
                 qs: qs, headers: {
                     'accept': 'application/json'
                 }
-            }, function (error, response, body) {
-                if(response && response.statusCode == 200) {
-                    callback(JSON.parse(body));
-                } else {
-                    console.log("Error getting query status: " + error);
-                }
-            })
+            }, getHttpCallbackFunction(callback))
         })
     }
 }
