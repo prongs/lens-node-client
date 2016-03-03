@@ -24,7 +24,7 @@ function LensClient(parameters) {
             });
         }
     };
-    this.getQueryStatus = function (handle, callback) {
+    this.getQuery = function (handle, callback) {
         this.getSession(function (sessionHandle) {
             request.get({
                 url: lensClient.lensServerBaseUrl + "/queryapi/queries/" + handle,
