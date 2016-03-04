@@ -31,6 +31,9 @@ function LensClient(parameters) {
         } else {
             request.post({
                 url: lensClient.lensServerBaseUrl + "session/",
+                headers: {
+                    'accept': 'application/xml'
+                },
                 formData: {username: lensClient.username, password: lensClient.password}
             }, function (error, response, body) {
                 if (response && response.statusCode == 200) {
