@@ -34,7 +34,7 @@ function LensClient(parameters) {
                 headers: {
                     'accept': 'application/xml'
                 },
-                formData: {username: lensClient.username, password: lensClient.password}
+                formData: {username: lensClient.username, password: lensClient.password, sessionconf:"<conf></conf>"}
             }, function (error, response, body) {
                 if (response && response.statusCode == 200) {
                     lensClient._session = body;
