@@ -45,17 +45,17 @@ function LensClient(parameters) {
             });
         }
     };
-    this.getQuery = function (handle, callback) {
+    this.getQuery = function (handle, successCallBack, failureCallBack) {
         this.getSession(function (sessionHandle) {
             request.get({
                 url: lensClient.lensServerBaseUrl + "queryapi/queries/" + handle,
                 qs: {sessionid: sessionHandle}, headers: {
                     'accept': 'application/json'
                 }
-            }, getHttpCallbackFunction(callback))
+            }, getHttpCallbackFunction(successCallBack, failureCallBack))
         })
     };
-    this.listQueries = function (params, callback) {
+    this.listQueries = function (params, successCallBack, failureCallBack) {
         this.getSession(function (sessionHandle) {
             var qs = JSON.parse(JSON.stringify(params));
             qs['sessionid'] = sessionHandle;
@@ -64,7 +64,7 @@ function LensClient(parameters) {
                 qs: qs, headers: {
                     'accept': 'application/json'
                 }
-            }, getHttpCallbackFunction(callback))
+            }, getHttpCallbackFunction(successCallBack, failureCallBack))
         })
     }
 }
