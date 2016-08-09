@@ -13,6 +13,7 @@ class LensClient {
       if (response && response.statusCode == 200) {
         successCallback(JSON.parse(body));
       } else {
+        error = error || body;
         console.error(error);
         if (errorCallback) {
           errorCallback(error);
